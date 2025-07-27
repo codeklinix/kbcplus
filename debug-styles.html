@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Debug Test</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .debug-test {
+            width: 200px;
+            height: 200px;
+            background-color: yellow;
+            border: 5px solid blue;
+            margin: 20px;
+            padding: 10px;
+        }
+        
+        .inline-test {
+            background-color: lime !important;
+            color: red !important;
+            font-size: 24px;
+            padding: 20px;
+            border: 3px dashed purple;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="inline-test">Inline CSS Test - Should be lime background with red text</h1>
+    
+    <div class="debug-test">
+        <p>This should have yellow background and blue border (inline CSS)</p>
+    </div>
+    
+    <div class="home-card">
+        <p>This should have red border and be 175x175px (external CSS)</p>
+    </div>
+    
+    <div class="home-grid" id="home-radio-stations">
+        <div class="home-card">Station 1</div>
+        <div class="home-card">Station 2</div>
+        <div class="home-card">Station 3</div>
+    </div>
+    
+    <script>
+        // Log CSS loading status
+        console.log('Page loaded');
+        console.log('Stylesheets:', document.styleSheets.length);
+        
+        // Check if external CSS loaded
+        for (let i = 0; i < document.styleSheets.length; i++) {
+            try {
+                console.log('Stylesheet', i, ':', document.styleSheets[i].href);
+                console.log('Rules count:', document.styleSheets[i].cssRules.length);
+            } catch (e) {
+                console.log('Cannot access stylesheet', i, ':', e.message);
+            }
+        }
+    </script>
+</body>
+</html>

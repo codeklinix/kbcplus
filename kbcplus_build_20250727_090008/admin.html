@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - KBC +</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .admin-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .tab-button {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 24px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px 24px;
+            color: #333;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: rgba(220, 53, 69, 0.2);
+            border-color: rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: rgba(220, 53, 69, 0.3);
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .item-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .item-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .item-card h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .item-card p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .item-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background-color: #28a745;
+        }
+
+        .status-inactive {
+            background-color: #dc3545;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #28a745;
+        }
+
+        .message.error {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-tabs {
+                flex-direction: column;
+            }
+            
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="btn logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-cog"></i> KBC + Admin Dashboard</h1>
+            <p>Manage your streaming content and settings</p>
+            <div id="user-info"></div>
+        </div>
+
+        <div class="admin-tabs">
+            <button class="tab-button active" onclick="showTab('radio')">
+                <i class="fas fa-radio"></i> Radio Stations
+            </button>
+            <button class="tab-button" onclick="showTab('tv')">
+                <i class="fas fa-tv"></i> TV Channels
+            </button>
+            <button class="tab-button" onclick="showTab('podcasts')">
+                <i class="fas fa-podcast"></i> Podcasts
+            </button>
+            <button class="tab-button" onclick="showTab('news')">
+                <i class="fas fa-newspaper"></i> News
+            </button>
+            <button class="tab-button" onclick="showTab('schedule')">
+                <i class="fas fa-calendar"></i> Schedule
+            </button>
+            <button class="tab-button" onclick="showTab('users')">
+                <i class="fas fa-users"></i> Users
+            </button>
+            <button class="tab-button" onclick="showTab('settings')">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+
+        <div id="message-container"></div>
+
+        <!-- Radio Stations Tab -->
+        <div id="radio" class="tab-content active">
+            <h3><i class="fas fa-radio"></i> Manage Radio Stations</h3>
+            <form id="radio-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="radio-name">Station Name *</label>
+                        <input type="text" id="radio-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="radio-url">Stream URL *</label>
+                        <input type="url" id="radio-url" name="url" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="radio-logo">Logo URL</label>
+                        <input type="url" id="radio-logo" name="logo">
+                    </div>
+                    <div class="form-group">
+                        <label for="radio-category">Category</label>
+                        <select id="radio-category" name="category">
+                            <option value="general">General</option>
+                            <option value="news">News</option>
+                            <option value="music">Music</option>
+                            <option value="talk">Talk</option>
+                            <option value="sports">Sports</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="radio-description">Description</label>
+                    <textarea id="radio-description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="radio-status">Status</label>
+                        <select id="radio-status" name="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="radio-order">Display Order</label>
+                        <input type="number" id="radio-order" name="display_order" min="0" value="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Add Station
+                </button>
+                <button type="button" class="btn" onclick="clearForm('radio-form')">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </form>
+            <div id="radio-items" class="items-grid"></div>
+        </div>
+
+        <!-- TV Channels Tab -->
+        <div id="tv" class="tab-content">
+            <h3><i class="fas fa-tv"></i> Manage TV Channels</h3>
+            <form id="tv-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tv-name">Channel Name *</label>
+                        <input type="text" id="tv-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tv-url">Stream URL *</label>
+                        <input type="url" id="tv-url" name="url" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tv-logo">Logo URL</label>
+                        <input type="url" id="tv-logo" name="logo">
+                    </div>
+                    <div class="form-group">
+                        <label for="tv-category">Category</label>
+                        <select id="tv-category" name="category">
+                            <option value="general">General</option>
+                            <option value="news">News</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="sports">Sports</option>
+                            <option value="documentary">Documentary</option>
+                            <option value="kids">Kids</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="tv-description">Description</label>
+                    <textarea id="tv-description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tv-status">Status</label>
+                        <select id="tv-status" name="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tv-order">Display Order</label>
+                        <input type="number" id="tv-order" name="display_order" min="0" value="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Add Channel
+                </button>
+                <button type="button" class="btn" onclick="clearForm('tv-form')">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </form>
+            <div id="tv-items" class="items-grid"></div>
+        </div>
+
+        <!-- Podcasts Tab -->
+        <div id="podcasts" class="tab-content">
+            <h3><i class="fas fa-podcast"></i> Manage Podcasts</h3>
+            <form id="podcast-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="podcast-title">Title *</label>
+                        <input type="text" id="podcast-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-host">Host</label>
+                        <input type="text" id="podcast-host" name="host">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="podcast-url">Audio URL *</label>
+                        <input type="url" id="podcast-url" name="url" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-duration">Duration (minutes)</label>
+                        <input type="number" id="podcast-duration" name="duration" min="1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="podcast-thumbnail">Thumbnail URL</label>
+                        <input type="url" id="podcast-thumbnail" name="thumbnail">
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-category">Category</label>
+                        <select id="podcast-category" name="category">
+                            <option value="general">General</option>
+                            <option value="business">Business</option>
+                            <option value="technology">Technology</option>
+                            <option value="lifestyle">Lifestyle</option>
+                            <option value="education">Education</option>
+                            <option value="comedy">Comedy</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="podcast-description">Description</label>
+                    <textarea id="podcast-description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="podcast-status">Status</label>
+                        <select id="podcast-status" name="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="podcast-order">Display Order</label>
+                        <input type="number" id="podcast-order" name="display_order" min="0" value="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Add Podcast
+                </button>
+                <button type="button" class="btn" onclick="clearForm('podcast-form')">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </form>
+            <div id="podcast-items" class="items-grid"></div>
+        </div>
+
+        <!-- News Tab -->
+        <div id="news" class="tab-content">
+            <h3><i class="fas fa-newspaper"></i> Manage News</h3>
+            <form id="news-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="news-title">Title *</label>
+                        <input type="text" id="news-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="news-author">Author</label>
+                        <input type="text" id="news-author" name="author">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="news-image">Image URL</label>
+                        <input type="url" id="news-image" name="image">
+                    </div>
+                    <div class="form-group">
+                        <label for="news-category">Category</label>
+                        <select id="news-category" name="category">
+                            <option value="general">General</option>
+                            <option value="politics">Politics</option>
+                            <option value="business">Business</option>
+                            <option value="sports">Sports</option>
+                            <option value="technology">Technology</option>
+                            <option value="entertainment">Entertainment</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="news-summary">Summary</label>
+                    <textarea id="news-summary" name="summary" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="news-content">Content *</label>
+                    <textarea id="news-content" name="content" rows="6" required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="news-status">Status</label>
+                        <select id="news-status" name="status">
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="news-featured">Featured</label>
+                        <select id="news-featured" name="featured">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Add News Article
+                </button>
+                <button type="button" class="btn" onclick="clearForm('news-form')">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </form>
+            <div id="news-items" class="items-grid"></div>
+        </div>
+
+        <!-- Schedule Tab -->
+        <div id="schedule" class="tab-content">
+            <h3><i class="fas fa-calendar"></i> Manage Schedule</h3>
+            <form id="schedule-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="schedule-title">Program Title *</label>
+                        <input type="text" id="schedule-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-type">Type</label>
+                        <select id="schedule-type" name="type">
+                            <option value="radio">Radio</option>
+                            <option value="tv">TV</option>
+                            <option value="podcast">Podcast</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="schedule-start">Start Time *</label>
+                        <input type="datetime-local" id="schedule-start" name="start_time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-end">End Time *</label>
+                        <input type="datetime-local" id="schedule-end" name="end_time" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-description">Description</label>
+                    <textarea id="schedule-description" name="description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="schedule-recurring">Recurring</label>
+                        <select id="schedule-recurring" name="recurring">
+                            <option value="none">None</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="schedule-status">Status</label>
+                        <select id="schedule-status" name="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Add Schedule
+                </button>
+                <button type="button" class="btn" onclick="clearForm('schedule-form')">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </form>
+            <div id="schedule-items" class="items-grid"></div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users" class="tab-content">
+            <h3><i class="fas fa-users"></i> Manage Users</h3>
+            <form id="user-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="user-username">Username *</label>
+                        <input type="text" id="user-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-email">Email *</label>
+                        <input type="email" id="user-email" name="email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="user-password">Password *</label>
+                        <input type="password" id="user-password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-role">Role</label>
+                        <select id="user-role" name="role">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-plus"></i> Add User
+                </button>
+                <button type="button" class="btn" onclick="clearForm('user-form')">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </form>
+            <div id="user-items" class="items-grid"></div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <h3><i class="fas fa-cog"></i> Site Settings</h3>
+            <form id="settings-form">
+                <div class="form-group">
+                    <label for="site-name">Site Name</label>
+                    <input type="text" id="site-name" name="site_name" value="KBC +">
+                </div>
+                <div class="form-group">
+                    <label for="site-description">Site Description</label>
+                    <textarea id="site-description" name="site_description" rows="3">Your premier streaming destination for radio, TV, podcasts, and news.</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contact-email">Contact Email</label>
+                        <input type="email" id="contact-email" name="contact_email" value="feedback@kbc.co.ke">
+                    </div>
+                    <div class="form-group">
+                        <label for="site-logo">Site Logo URL</label>
+                        <input type="url" id="site-logo" name="site_logo">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="items-per-page">Items Per Page</label>
+                        <input type="number" id="items-per-page" name="items_per_page" min="1" max="50" value="12">
+                    </div>
+                    <div class="form-group">
+                        <label for="cache-duration">Cache Duration (minutes)</label>
+                        <input type="number" id="cache-duration" name="cache_duration" min="1" value="60">
+                    </div>
+                </div>
+                <button type="submit" class="btn">
+                    <i class="fas fa-save"></i> Save Settings
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

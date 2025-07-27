@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Integration Setup - KBC+</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+        
+        .status-section {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .todo-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .info-section {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .step {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        ol, ul {
+            line-height: 1.8;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 YouTube Integration Setup</h1>
+        
+        <div class="status-section">
+            <h3>✅ What's Been Fixed</h3>
+            <ul>
+                <li>Admin login system working (username: <code>admin</code>, password: <code>admin123</code>)</li>
+                <li>Database structure updated with missing columns (<code>display_order</code>, <code>is_active</code>, etc.)</li>
+                <li>YouTube video integration in Live TV section</li>
+                <li>Videos tab with filtering and search functionality</li>
+                <li>Admin panel can now update stream URLs without errors</li>
+            </ul>
+        </div>
+        
+        <div class="todo-section">
+            <h3>⚠️ To Display Your YouTube Videos</h3>
+            <p>Currently showing sample videos. Follow these steps to show your actual YouTube content:</p>
+        </div>
+        
+        <div class="step">
+            <h3>Step 1: Update YouTube Video IDs</h3>
+            <p>Edit the file <code>youtube_config.php</code> and replace the placeholder video IDs with your actual YouTube video IDs:</p>
+            <div class="code-block">
+// In youtube_config.php, replace these:
+'youtube_id' => 'YOUR_VIDEO_ID_1',  // ← Replace with actual video ID
+'youtube_id' => 'YOUR_VIDEO_ID_2',  // ← Replace with actual video ID
+// etc...
+
+// Example:
+'youtube_id' => 'dQw4w9WgXcQ',  // Actual YouTube video ID
+            </div>
+            <p><strong>How to get YouTube video IDs:</strong></p>
+            <ul>
+                <li>Go to your YouTube video</li>
+                <li>Look at the URL: <code>youtube.com/watch?v=<span class="highlight">dQw4w9WgXcQ</span></code></li>
+                <li>The part after <code>v=</code> is your video ID</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <h3>Step 2: Get YouTube API Key (Optional but Recommended)</h3>
+            <p>To automatically fetch video details and thumbnails:</p>
+            <ol>
+                <li>Go to <a href="https://console.developers.google.com/" target="_blank">Google Developers Console</a></li>
+                <li>Create a new project or select existing one</li>
+                <li>Enable "YouTube Data API v3"</li>
+                <li>Create credentials → API Key</li>
+                <li>Copy the API key to <code>youtube_config.php</code>:</li>
+            </ol>
+            <div class="code-block">
+define('YOUTUBE_API_KEY', 'YOUR_ACTUAL_API_KEY_HERE');
+define('YOUTUBE_CHANNEL_ID', 'YOUR_CHANNEL_ID_HERE');
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 3: Test Your Setup</h3>
+            <ol>
+                <li>Update the video IDs in <code>youtube_config.php</code></li>
+                <li>Delete current videos from database (optional - they'll be updated automatically)</li>
+                <li>Visit your Live TV page to see your videos</li>
+                <li>Use the admin panel to manage additional content</li>
+            </ol>
+        </div>
+        
+        <div class="info-section">
+            <h3>📁 File Locations</h3>
+            <table>
+                <tr>
+                    <th>File</th>
+                    <th>Purpose</th>
+                    <th>What to Update</th>
+                </tr>
+                <tr>
+                    <td><code>youtube_config.php</code></td>
+                    <td>YouTube video configuration</td>
+                    <td>Replace video IDs and add API key</td>
+                </tr>
+                <tr>
+                    <td><code>backend/api/tv.php</code></td>
+                    <td>Live TV API</td>
+                    <td>Already updated to use config file</td>
+                </tr>
+                <tr>
+                    <td><code>backend/api/videos.php</code></td>
+                    <td>Videos section API</td>
+                    <td>Uses same video data</td>
+                </tr>
+                <tr>
+                    <td><code>admin.html</code></td>
+                    <td>Admin panel</td>
+                    <td>Now works without errors</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="info-section">
+            <h3>🎯 Current Features</h3>
+            <ul>
+                <li><strong>Live TV:</strong> Shows YouTube videos as TV channels</li>
+                <li><strong>Videos Tab:</strong> Browse and search all videos</li>
+                <li><strong>Admin Panel:</strong> Manage content through web interface</li>
+                <li><strong>YouTube Player:</strong> Embedded YouTube player for seamless playback</li>
+                <li><strong>Responsive Design:</strong> Works on desktop and mobile</li>
+            </ul>
+        </div>
+        
+        <div class="button-group">
+            <a href="login.html" class="btn btn-primary">Login to Admin</a>
+            <a href="index.html" class="btn btn-secondary">View Main Site</a>
+            <a href="admin.html" class="btn btn-secondary">Admin Panel</a>
+        </div>
+        
+        <div style="margin-top: 40px; text-align: center; color: #666;">
+            <p><strong>Need Help?</strong> Check the comments in <code>youtube_config.php</code> for detailed instructions.</p>
+        </div>
+    </div>
+</body>
+</html>

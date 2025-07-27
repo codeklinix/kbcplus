@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - KBC +</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, 
+                rgba(255, 182, 193, 0.3) 0%,
+                rgba(173, 216, 230, 0.3) 25%,
+                rgba(221, 160, 221, 0.3) 50%,
+                rgba(255, 218, 185, 0.3) 75%,
+                rgba(152, 251, 152, 0.3) 100%);
+        }
+
+        .login-form {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-form h1 {
+            color: rgba(0, 0, 0, 0.8);
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(0, 0, 0, 0.7);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: rgba(0, 0, 0, 0.8);
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            color: rgba(0, 0, 0, 0.8);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: rgba(139, 0, 0, 0.9);
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: rgba(0, 100, 0, 0.9);
+            display: none;
+        }
+
+        .back-to-site {
+            color: rgba(0, 0, 0, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .back-to-site:hover {
+            color: rgba(0, 0, 0, 0.8);
+        }
+
+        .loading {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: rgba(0, 0, 0, 0.7);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .remember-me input[type="checkbox"] {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        @media (max-width: 480px) {
+            .login-form {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h1>Login to KBC +</h1>
+            
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <label for="rememberMe">Remember me</label>
+                </div>
+                
+                <button type="submit" class="login-btn">Login</button>
+                
+                <div class="loading" id="loading"></div>
+            </form>
+            
+            <a href="index.html" class="back-to-site">← Back to Site</a>
+        </div>
+    </div>
+
+    <script>
+        // Check URL parameters for error messages
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        
+        if (error) {
+            const errorMessages = {
+                'access_denied': 'Access denied. Admin privileges required.',
+                'login_required': 'Please login to access this page.',
+                'session_expired': 'Your session has expired. Please login again.'
+            };
+            
+            const errorMessage = errorMessages[error] || 'An error occurred. Please try again.';
+            showError(errorMessage);
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            if (!username || !password) {
+                showError('Please enter both username and password.');
+                return;
+            }
+            
+            // Show loading state
+            document.querySelector('.login-btn').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+            hideMessages();
+            
+            try {
+                const response = await fetch('backend/api/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('Login successful! Redirecting...');
+                    
+                    // Store login state for admin access
+                    localStorage.setItem('admin_logged_in', 'true');
+                    localStorage.setItem('admin_username', result.user.username);
+                    localStorage.setItem('admin_role', result.user.role);
+                    
+                    // Store remember me preference
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                        localStorage.setItem('username', username);
+                    }
+                    
+                    // Redirect after short delay
+                    setTimeout(() => {
+                        const redirectUrl = urlParams.get('redirect') || (result.user.role === 'admin' ? 'admin.html' : 'index.html');
+                        window.location.href = redirectUrl;
+                    }, 1500);
+                } else {
+                    showError(result.error || result.message || 'Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('Network error. Please check your connection and try again.');
+            } finally {
+                // Hide loading state
+                document.querySelector('.login-btn').disabled = false;
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        // Auto-fill username if remembered
+        window.addEventListener('load', function() {
+            if (localStorage.getItem('rememberMe') === 'true') {
+                document.getElementById('rememberMe').checked = true;
+                const savedUsername = localStorage.getItem('username');
+                if (savedUsername) {
+                    document.getElementById('username').value = savedUsername;
+                    document.getElementById('password').focus();
+                }
+            }
+        });
+
+        // Save username when remember me is checked
+        document.getElementById('username').addEventListener('blur', function() {
+            if (document.getElementById('rememberMe').checked) {
+                localStorage.setItem('username', this.value);
+            }
+        });
+
+        // Clear saved data when remember me is unchecked
+        document.getElementById('rememberMe').addEventListener('change', function() {
+            if (!this.checked) {
+                localStorage.removeItem('rememberMe');
+                localStorage.removeItem('username');
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Handle Enter key in form fields
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+                if (e.target.id === 'username') {
+                    document.getElementById('password').focus();
+                } else if (e.target.id === 'password') {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }
+            }
+        });
+    </script>
+</body>
+</html>

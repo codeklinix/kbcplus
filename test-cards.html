@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Cards</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Inline test styles to compare */
+        .test-card {
+            width: 175px !important;
+            height: 175px !important;
+            border: 3px solid blue !important;
+            background-color: yellow !important;
+            margin: 10px;
+            display: inline-block;
+            box-sizing: border-box !important;
+        }
+        
+        .container {
+            padding: 20px;
+        }
+        
+        h2 {
+            color: black;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>CSS Test - If you see red bordered cards, the CSS file is loading correctly</h2>
+        
+        <h3>Cards using .home-card class (from style.css):</h3>
+        <div class="home-card">Card 1</div>
+        <div class="home-card">Card 2</div>
+        <div class="home-card">Card 3</div>
+        
+        <h3>Cards using inline .test-card class (should be blue border, yellow background):</h3>
+        <div class="test-card">Test 1</div>
+        <div class="test-card">Test 2</div>
+        <div class="test-card">Test 3</div>
+        
+        <h3>Radio stations container test:</h3>
+        <div id="home-radio-stations" class="home-grid">
+            <div class="home-card">Radio 1</div>
+            <div class="home-card">Radio 2</div>
+            <div class="home-card">Radio 3</div>
+            <div class="home-card">Radio 4</div>
+            <div class="home-card">Radio 5</div>
+        </div>
+    </div>
+</body>
+</html>

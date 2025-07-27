@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Sync Dashboard - KBC+</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .btn-success { background: #27ae60; }
+        .btn-success:hover { background: #229954; }
+        .btn-warning { background: #f39c12; }
+        .btn-warning:hover { background: #e67e22; }
+        .btn-danger { background: #e74c3c; }
+        .btn-danger:hover { background: #c0392b; }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .status.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .status.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .status.info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .video-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .video-thumbnail {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .video-info {
+            padding: 15px;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .video-meta {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .live-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>YouTube Sync Dashboard</h1>
+        <p>Manage and monitor your YouTube channel video synchronization</p>
+    </div>
+
+    <div id="statusMessage"></div>
+
+    <div class="stats" id="statsContainer">
+        <div class="stat-card">
+            <div class="stat-number" id="totalVideos">-</div>
+            <div class="stat-label">Total Videos</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="liveVideos">-</div>
+            <div class="stat-label">Live Videos</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="lastSync">-</div>
+            <div class="stat-label">Last Sync</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="totalViews">-</div>
+            <div class="stat-label">Total Views</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Sync Controls</h2>
+        <button class="btn btn-success" onclick="syncVideos()">🔄 Sync Now</button>
+        <button class="btn" onclick="loadVideos()">📺 View Videos</button>
+        <a href="test_youtube_api.php" class="btn btn-warning" target="_blank">🔧 Test API</a>
+        <a href="backend/api/youtube_sync.php" class="btn" target="_blank">📊 API Endpoint</a>
+        <button class="btn btn-danger" onclick="clearVideos()">🗑️ Clear All Videos</button>
+    </div>
+
+    <div class="card">
+        <h2>Recent Videos</h2>
+        <div id="videosContainer" class="loading">
+            Loading videos...
+        </div>
+    </div>
+
+    <script>
+        let isLoading = false;
+
+        // Load initial data
+        window.onload = function() {
+            loadStats();
+            loadVideos();
+        };
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch('backend/api/videos.php');
+                const videos = await response.json();
+                
+                if (Array.isArray(videos)) {
+                    document.getElementById('totalVideos').textContent = videos.length;
+                    
+                    const liveCount = videos.filter(v => v.is_live).length;
+                    document.getElementById('liveVideos').textContent = liveCount;
+                    
+                    const totalViews = videos.reduce((sum, v) => sum + (parseInt(v.views_count) || 0), 0);
+                    document.getElementById('totalViews').textContent = formatViews(totalViews);
+                }
+
+                // Get last sync time
+                const syncResponse = await fetch('backend/api/youtube_sync.php?action=status');
+                if (syncResponse.ok) {
+                    const syncData = await syncResponse.json();
+                    if (syncData.last_sync) {
+                        document.getElementById('lastSync').textContent = formatDate(syncData.last_sync);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadVideos() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            const container = document.getElementById('videosContainer');
+            container.innerHTML = '<div class="loading">Loading videos...</div>';
+
+            try {
+                const response = await fetch('backend/api/tv.php');
+                const videos = await response.json();
+
+                if (videos.error) {
+                    container.innerHTML = `<div class="status error">Error: ${videos.error}</div>`;
+                    return;
+                }
+
+                if (!Array.isArray(videos) || videos.length === 0) {
+                    container.innerHTML = '<div class="status info">No videos found. Try syncing with YouTube first.</div>';
+                    return;
+                }
+
+                // Display videos
+                container.innerHTML = '';
+                const videoGrid = document.createElement('div');
+                videoGrid.className = 'video-grid';
+
+                videos.slice(0, 12).forEach(video => {
+                    const videoCard = createVideoCard(video);
+                    videoGrid.appendChild(videoCard);
+                });
+
+                container.appendChild(videoGrid);
+
+            } catch (error) {
+                container.innerHTML = `<div class="status error">Error loading videos: ${error.message}</div>`;
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function createVideoCard(video) {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+
+            const isLive = video.is_live;
+            const liveBadge = isLive ? '<span class="live-badge">LIVE</span>' : '';
+
+            card.innerHTML = `
+                <img src="${video.logo_url || video.thumbnail_url}" alt="${video.channel_name}" class="video-thumbnail" onerror="this.src='https://via.placeholder.com/300x180?text=No+Image'">
+                <div class="video-info">
+                    <div class="video-title">${video.channel_name} ${liveBadge}</div>
+                    <div class="video-meta">Category: ${video.category}</div>
+                    <div class="video-meta">Duration: ${video.duration || 'N/A'}</div>
+                    <div class="video-meta">Views: ${video.formatted_views || formatViews(video.views_count || 0)}</div>
+                    <div class="video-meta">Broadcaster: ${video.broadcaster}</div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                window.open(video.stream_url || video.youtube_url, '_blank');
+            });
+
+            return card;
+        }
+
+        async function syncVideos() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            showStatus('🔄 Syncing videos from YouTube...', 'info');
+
+            try {
+                const response = await fetch('backend/api/youtube_sync.php', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const syncResults = result.sync_results;
+                    showStatus(`✅ Sync completed! New: ${syncResults.new_videos}, Updated: ${syncResults.updated_videos}, Total: ${syncResults.total_fetched}`, 'success');
+                    
+                    // Refresh data
+                    await loadStats();
+                    await loadVideos();
+                } else {
+                    showStatus(`❌ Sync failed: ${result.error}`, 'error');
+                }
+
+            } catch (error) {
+                showStatus(`❌ Sync error: ${error.message}`, 'error');
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        async function clearVideos() {
+            if (!confirm('Are you sure you want to clear all videos? This cannot be undone.')) {
+                return;
+            }
+
+            try {
+                // Note: You'd need to implement a clear endpoint
+                showStatus('⚠️ Clear functionality not implemented yet', 'warning');
+            } catch (error) {
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        function formatViews(views) {
+            if (views >= 1000000) {
+                return Math.round(views / 100000) / 10 + 'M';
+            } else if (views >= 1000) {
+                return Math.round(views / 100) / 10 + 'K';
+            } else {
+                return views.toString();
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // Auto-refresh every 5 minutes
+        setInterval(() => {
+            if (!isLoading) {
+                loadStats();
+            }
+        }, 300000);
+    </script>
+</body>
+</html>

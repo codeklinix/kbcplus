@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Computed Styles</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .debug-info {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Computed Styles Test</h1>
+    
+    <div class="debug-info">
+        <p>This test checks if CSS styles are being applied to home cards. Open browser DevTools and inspect the cards below.</p>
+    </div>
+
+    <!-- Test the radio stations container -->
+    <div id="home-radio-stations" class="home-grid">
+        <div class="home-card">
+            <div class="card-header">
+                <div class="card-logo">📻</div>
+                <div class="card-info">
+                    <h3>Test Radio Station</h3>
+                    <p>Should be 175x175 with red border</p>
+                </div>
+            </div>
+            <div class="card-content">
+                <p>This card should be exactly 175x175 pixels with a red border if CSS is working correctly.</p>
+            </div>
+        </div>
+        
+        <div class="home-card">
+            <div class="card-header">
+                <div class="card-logo">🎵</div>
+                <div class="card-info">
+                    <h3>Another Station</h3>
+                    <p>Same size and border</p>
+                </div>
+            </div>
+            <div class="card-content">
+                <p>Second card for testing horizontal scroll layout.</p>
+            </div>
+        </div>
+        
+        <div class="home-card">
+            <div class="card-header">
+                <div class="card-logo">🎶</div>
+                <div class="card-info">
+                    <h3>Third Station</h3>
+                    <p>Testing scroll</p>
+                </div>
+            </div>
+            <div class="card-content">
+                <p>Third card to ensure horizontal scrolling works.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="debug-info">
+        <p><strong>Expected behavior:</strong></p>
+        <ul>
+            <li>Container should scroll horizontally</li>
+            <li>Each card should be exactly 175x175 pixels</li>
+            <li>Each card should have a red border (debug styling)</li>
+            <li>Cards should not wrap to new lines</li>
+        </ul>
+    </div>
+
+    <script>
+        // Log computed styles for debugging
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('home-radio-stations');
+            const cards = document.querySelectorAll('.home-card');
+            
+            console.log('Container computed styles:', window.getComputedStyle(container));
+            console.log('Container display:', window.getComputedStyle(container).display);
+            console.log('Container overflow-x:', window.getComputedStyle(container).overflowX);
+            
+            cards.forEach((card, index) => {
+                const styles = window.getComputedStyle(card);
+                console.log(`Card ${index + 1} computed styles:`, styles);
+                console.log(`Card ${index + 1} dimensions:`, {
+                    width: styles.width,
+                    height: styles.height,
+                    border: styles.border,
+                    borderColor: styles.borderColor,
+                    flexShrink: styles.flexShrink
+                });
+            });
+        });
+    </script>
+</body>
+</html>

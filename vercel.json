@@ -1,19 +1,8 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "**/*",
-      "use": "@vercel/static"
+      "source": "/backend/api/(.*)",
+      "destination": "/api/$1"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
-  "functions": {
-    "backend/api/*.php": {
-      "runtime": "@vercel/php@0.6.0"
-    }
-  }
+  ]
 }
